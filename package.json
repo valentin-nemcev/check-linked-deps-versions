@@ -1,0 +1,21 @@
+{
+  "name": "check-linked-deps-versions",
+  "version": "1.0.0",
+  "description": "Does linked dependencies versions match those specified in package.json?",
+  "main": "check-linked-deps-versions.js",
+  "bin": "./check-linked-deps-versions.js",
+  "repository": "git@github.com:valentin-nemcev/check-linked-deps-versions.git",
+  "author": "Valentin",
+  "license": "MIT",
+  "scripts": {
+      "precommit": "standard"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "lodash": "^4.17.10"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "standard": "^11.0.1"
+  }
+}
