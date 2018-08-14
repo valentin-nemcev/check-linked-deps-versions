@@ -8,7 +8,9 @@
   "author": "Valentin",
   "license": "MIT",
   "scripts": {
-    "precommit": "standard"
+    "lint": "standard",
+    "precommit": "standard",
+    "postversion": "git push --follow-tags"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
