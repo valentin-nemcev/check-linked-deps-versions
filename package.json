@@ -1,6 +1,6 @@
 {
   "name": "check-linked-deps-versions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Does linked dependencies versions match those specified in package.json?",
   "main": "check-linked-deps-versions.js",
   "bin": "./check-linked-deps-versions.js",
@@ -8,7 +8,7 @@
   "author": "Valentin",
   "license": "MIT",
   "scripts": {
-      "precommit": "standard"
+    "precommit": "standard"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
