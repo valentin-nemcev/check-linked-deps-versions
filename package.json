@@ -1,6 +1,6 @@
 {
   "name": "check-linked-deps-versions",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Does linked dependencies versions match those specified in package.json?",
   "main": "check-linked-deps-versions.js",
   "bin": "./check-linked-deps-versions.js",
