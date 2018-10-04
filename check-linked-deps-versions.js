@@ -5,6 +5,7 @@ const Promise = require('bluebird')
 const path = require('path')
 const fs = Promise.promisifyAll(require('fs'))
 const proc = Promise.promisifyAll(require('child_process'))
+const semver = require('semver')
 
 const {pickBy, includes, toPairs, omit} = require('lodash/fp')
 
@@ -27,7 +28,7 @@ async function checkLinkedDepsVersions () {
   const depTags = await Promise.all(toPairs(linkedDeps))
     .map(async ([name, url]) => ({
       name,
-      specTag: new URL(url).hash.replace(/^#/, ''),
+      specTag: new URL(url).hash.replace(/^#(semver:)?/, ''),
       actualTag: await proc.execAsync(
         'git describe --dirty',
         {
@@ -39,12 +40,15 @@ async function checkLinkedDepsVersions () {
         }
       ).call('trim')
     }))
-    .map(dep => ({...dep, matches: dep.specTag === dep.actualTag}))
+    .map(dep => ({
+      ...dep,
+      matches: semver.satisfies(dep.actualTag, dep.specTag)
+    }))
 
   const report = depTags
     .filter(({matches}) => !matches)
     .map(({name, specTag, actualTag, matches}) =>
-      `${name}: ${specTag} ${matches ? '==' : '!='} ${actualTag}`)
+      `${name}: ${specTag} ${matches ? 'matches' : 'doesn\'t match'} ${actualTag}`)
     .join('\n')
 
   print(!report ? 'Ok' : 'Mismatch: \n' + report)
