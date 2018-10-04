@@ -6,6 +6,7 @@ const path = require('path')
 const fs = Promise.promisifyAll(require('fs'))
 const proc = Promise.promisifyAll(require('child_process'))
 const semver = require('semver')
+const chalk = require('chalk')
 
 const {pickBy, includes, toPairs, omit} = require('lodash/fp')
 
@@ -46,14 +47,15 @@ async function checkLinkedDepsVersions () {
     }))
 
   const report = depTags
-    .filter(({matches}) => !matches)
+    // .filter(({matches}) => !matches)
     .map(({name, specTag, actualTag, matches}) =>
-      `${name}: ${specTag} ${matches ? 'matches' : 'doesn\'t match'} ${actualTag}`)
+      chalk[matches ? 'green' : 'red'](`${name}: ${specTag} ${matches ? 'matches' : 'doesn\'t match'} ${actualTag}`))
     .join('\n')
 
-  print(!report ? 'Ok' : 'Mismatch: \n' + report)
+  print(!report ? chalk.green('No linked dependencies') : 'Linked dependencies versions: \n' + report)
 
-  process.exit(report ? 1 : 0)
+  const ok = depTags.every(({matches}) => matches)
+  process.exit(ok ? 0 : 1)
 }
 
 checkLinkedDepsVersions().catch(e => {
