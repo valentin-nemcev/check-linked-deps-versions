@@ -10,6 +10,7 @@ const chalk = require('chalk')
 
 const {pickBy, includes, toPairs, omit} = require('lodash/fp')
 
+const gitHashRe = /^[0-9a-f]{5,40}$/
 // eslint-disable-next-line no-console
 const print = console.log
 
@@ -31,7 +32,7 @@ async function checkLinkedDepsVersions () {
       name,
       specTag: new URL(url).hash.replace(/^#(semver:)?/, ''),
       actualTag: await proc.execAsync(
-        'git describe --dirty',
+        'git describe --dirty --always',
         {
           cwd: path.join('node_modules', name),
           // Git sets GIT_INDEX_FILE to absolute path to the index file of the
@@ -43,7 +44,9 @@ async function checkLinkedDepsVersions () {
     }))
     .map(dep => ({
       ...dep,
-      matches: semver.satisfies(dep.actualTag, dep.specTag)
+      matches: gitHashRe.test(dep.specTag)
+        ? dep.actualTag.startsWith(dep.specTag)
+        : semver.satisfies(dep.actualTag, dep.specTag)
     }))
 
   const report = depTags
